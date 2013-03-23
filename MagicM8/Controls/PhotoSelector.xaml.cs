@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.IO;
 using Microsoft.Phone.Tasks;
@@ -111,8 +112,13 @@ namespace MagicM8.Controls
 
         private void ShowPicture(Stream pictureStream)
         {
+            HideAll();
 
+            var bmp = new BitmapImage();
+            bmp.SetSource(pictureStream);
+            ImgPhoto.Source = bmp;
 
+            PhotoArea.Visibility = Visibility.Visible;
         }
 
         private void StartOcrConversion(Stream pictureStream)
@@ -128,6 +134,8 @@ namespace MagicM8.Controls
 
         private void OnOcrCompleted(OcrServiceResult result)
         {
+            HideAll();
+            ResultArea.Visibility = Visibility.Visible;
             if (result.Status == Status.Success)
             {
                 var count = 0;
@@ -141,22 +149,30 @@ namespace MagicM8.Controls
 
                 if (count == 0)
                 {
-                    // TODO: display empty result message
+                    TxtEmptyResult.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    // TODO: show result text
+                    TxtResult.Text = sb.ToString();
+                    TxtResult.Visibility = Visibility.Visible;
                 }
             }
             else
             {
-                // TODO: show error message indication conversion failure
+                TxtError.Text = "[OCR conversion failed]\n" + result.Exception.Message;
+                TxtError.Visibility = Visibility.Visible;
             }
         }
 
         private void HideAll()
         {
-            // TODO: hide all ui components
+            BtnOpenPicture.Visibility = Visibility.Collapsed;
+            BtnTakePicture.Visibility = Visibility.Collapsed;
+            PhotoArea.Visibility = Visibility.Collapsed;
+            ResultArea.Visibility = Visibility.Collapsed;
+            TxtEmptyResult.Visibility = Visibility.Collapsed;
+            TxtError.Visibility = Visibility.Collapsed;
+            TxtResult.Visibility = Visibility.Collapsed;
         }
     }
 }
