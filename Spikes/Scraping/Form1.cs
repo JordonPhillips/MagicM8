@@ -16,5 +16,14 @@ namespace Scraping
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var cardname = textBox1.Text;
+
+            var result = Scraping.ScrapeMCIForCard(cardname);
+
+            textBox2.Text = result;
+        }
     }
 }
