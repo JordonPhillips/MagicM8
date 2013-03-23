@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="MagicM8.Controls.PhotoSelector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="520" d:DesignWidth="480">
+    
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        
+        <StackPanel Grid.Row="0" VerticalAlignment="Center">
+            <Button x:Name="BtnTakePicture" Click="TakePicture_Click" Margin="140,0" Height="200">
+                <Image Source="/MagicM8;component/Assets/Images/TakePhoto.png" Stretch="None"/>
+            </Button>
+            <Button x:Name="BtnOpenPicture" Click="OpenPicture_Click" Margin="140,50,140,0" Height="200">
+                <Image Source="/MagicM8;component/Assets/Images/OpenImage.png" Stretch="None"/>
+            </Button>
+        </StackPanel>
+
+        <Grid x:Name="PhotoArea" Visibility="Collapsed" >
+            <Image x:Name="ImgPhoto"/>
+            <Border 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Background="Transparent" Opacity="0.7" >
+                <TextBlock 
+                        Text="Converting... Please Wait" 
+                        FontSize="24"
+                        Margin="10,5,10,5" />
+            </Border>
+        </Grid>
+
+        <Grid x:Name="ResultArea" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock 
+                    x:Name="TxtResult" 
+                    Grid.Row="0"
+                    FontSize="24"
+                    TextWrapping="Wrap"
+                    Visibility="Collapsed" />
+
+            <TextBlock 
+                    x:Name="TxtEmptyResult" 
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="Yellow"
+                    FontSize="24"
+                    Text="[No text was found]"
+                    Visibility="Collapsed" />
+
+            <TextBlock 
+                    x:Name="TxtError" 
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="Red"
+                    FontSize="24"
+                    TextWrapping="Wrap"
+                    Visibility="Collapsed" />
+        </Grid>
+    </Grid>
+</UserControl>
