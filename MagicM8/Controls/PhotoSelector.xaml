@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MagicM8.Controls.WindowsPhoneControl1"
+﻿<UserControl x:Class="MagicM8.Controls.PhotoSelector"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,12 +9,12 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="520" d:DesignWidth="480">
     
-    <Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <StackPanel Grid.Row="0" VerticalAlignment="Center">
-            <Button x:Name="btnTakePicture" Click="TakePicture_Click" Margin="140,0" Height="200">
+            <Button x:Name="BtnTakePicture" Click="TakePicture_Click" Margin="140,0" Height="200">
                 <Image Source="/MagicM8;component/Assets/Images/TakePhoto.png" Stretch="None"/>
             </Button>
-            <Button x:Name="btnOpenPicture" Click="" Margin="140,50,140,0" Height="200">
+            <Button x:Name="BtnOpenPicture" Click="OpenPicture_Click" Margin="140,50,140,0" Height="200">
                 <Image Source="/MagicM8;component/Assets/Images/OpenImage.png" Stretch="None"/>
             </Button>
         </StackPanel>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Windows.Controls;
 using System.IO;
 using Microsoft.Phone.Tasks;
@@ -10,42 +11,55 @@ namespace MagicM8.Controls
 {
     public partial class PhotoSelector : UserControl
     {
-        private bool showingCamera = false;
+        private bool showingCamera;
         private CameraCaptureTask cameraCaptureTask;
         private PhotoChooserTask photoChooserTask;
         private const double MaxPictureSizeDiag = 600;
 
         public PhotoSelector()
         {
-            this.cameraCaptureTask = new CameraCaptureTask();
-            this.photoChooserTask = new PhotoChooserTask();
+            InitializeComponent();
 
-            this.cameraCaptureTask.Completed += new System.EventHandler<PhotoResult>(this.PhotoChooserCompleted);
-            this.photoChooserTask.Completed += new System.EventHandler<PhotoResult>(this.PhotoChooserCompleted);
+            cameraCaptureTask = new CameraCaptureTask();
+            photoChooserTask = new PhotoChooserTask();
+
+            cameraCaptureTask.Completed += PhotoChooserCompleted;
+            photoChooserTask.Completed += PhotoChooserCompleted;
         }
 
         private void TakePicture_Click(Object sender, System.Windows.RoutedEventArgs e)
         {
             // Prevents re-opening of the camera
-            if (this.showingCamera) return;
-            this.showingCamera = true;
-            this.cameraCaptureTask.Show();
+            if (showingCamera) return;
+            showingCamera = true;
+            cameraCaptureTask.Show();
         }
 
         private void OpenPicture_Click(Object sender, System.Windows.RoutedEventArgs e)
         {
             // Prevents opening more than one method of photo selection
-            if (this.showingCamera) return;
-            this.showingCamera = true;
-            this.photoChooserTask.Show();
+            if (showingCamera) return;
+            showingCamera = true;
+            photoChooserTask.Show();
         }
 
         private void PhotoChooserCompleted(object sender, PhotoResult e)
         {
-            this.showingCamera = false;
-            if (!(e.TaskResult = TaskResult.OK)) return;
-            this.ShowPicture(e.ChosenPhoto);
-            this.StartOcrConversion(e.ChosenPhoto);
+            showingCamera = false;
+            if (e.TaskResult != TaskResult.OK) return;
+            ShowPicture(e.ChosenPhoto);
+            StartOcrConversion(e.ChosenPhoto);
+        }
+
+        private static byte[] StreamToByteArray(Stream stream)
+        {
+            var buffer = new byte[stream.Length];
+
+            var seekPosition = stream.Seek(0, SeekOrigin.Begin);
+            var bytesRead = stream.Read(buffer, 0, buffer.Length);
+            seekPosition = stream.Seek(0, SeekOrigin.Begin);
+
+            return buffer;
         }
 
         /// <summary>
@@ -73,7 +87,7 @@ namespace MagicM8.Controls
                 try
                 {
                     tempStream = new MemoryStream();
-                    Extensions.SaveJpeg(wb, tempStream, newWidth, newHeight, 0, 100);
+                    wb.SaveJpeg(tempStream, newWidth, newHeight, 0, 100);
                     resizedStream = tempStream;
                     tempStream = null;
                 }
@@ -93,6 +107,56 @@ namespace MagicM8.Controls
                 // Returns the original stream if you don't need to scale down
                 return imageStream;
             }
+        }
+
+        private void ShowPicture(Stream pictureStream)
+        {
+
+
+        }
+
+        private void StartOcrConversion(Stream pictureStream)
+        {
+            pictureStream = ScaleImage(pictureStream, MaxPictureSizeDiag);
+            var buf = StreamToByteArray(pictureStream);
+
+            OcrService.RecognizeImageAsync(
+                HawaiiClient.HawaiiApplicationId,
+                buf,
+                output => Dispatcher.BeginInvoke(() => OnOcrCompleted(output)));
+        }
+
+        private void OnOcrCompleted(OcrServiceResult result)
+        {
+            if (result.Status == Status.Success)
+            {
+                var count = 0;
+                var sb = new StringBuilder();
+                foreach (var item in result.OcrResult.OcrTexts)
+                {
+                    count += item.Words.Count;
+                    sb.Append(item.Text);
+                    sb.Append("\n");
+                }
+
+                if (count == 0)
+                {
+                    // TODO: display empty result message
+                }
+                else
+                {
+                    // TODO: show result text
+                }
+            }
+            else
+            {
+                // TODO: show error message indication conversion failure
+            }
+        }
+
+        private void HideAll()
+        {
+            // TODO: hide all ui components
         }
     }
 }
