@@ -21,9 +21,15 @@ namespace Scraping
         {
             var cardname = textBox1.Text;
 
-            var result = Scraping.ScrapeMCIForCard(cardname);
+            var result = Scraping.MCISource(cardname);
 
             textBox2.Text = result;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var source = Scraping.MCISource(textBox1.Text);
+            var ci = Scraping.ScrapeMCIForCard(textBox1.Text, source);
         }
     }
 }
