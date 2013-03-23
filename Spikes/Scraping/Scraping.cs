@@ -86,6 +86,7 @@ namespace Scraping
 
             var legal = from node in table.Descendants()
                         where node.Name == "li" &&
+                        node.HasAttributes &&
                               node.Attribute("class").Value == "legal"
                         select node.Value;
 
@@ -100,12 +101,19 @@ namespace Scraping
                              node.Attribute("class").Value == "ctext"
                        select node.Descendants();
 
+            //var print = from node in table.Descendants()
+            //            where node.
+
+            ///tbody/tr/td[3]/small/b[2]
+
+            //var set = doc.XPathSelectElement("/body/table[3]/tr/td[3]");
+
             var ci = new CardInfo(cardname);
 
             ci.CardText = text.First().First().ToString();
             ci.CardText = ci.CardText.Replace("<b>", "");
             ci.CardText = ci.CardText.Replace("</b>", "");
-            ci.CardType = type.ToList()[0].ToString().Replace("\r\n", "").Trim();
+            ci.CardType = type.ToList()[0].ToString().Replace("\r\n", "").Replace("â€”", "-").Trim();
             foreach (var l in legal) ci.Legality.Add(l);
 
             return ci;
